@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Store</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <header>
+    <nav class="bg-blue-500 p-4 flex justify-between items-center">
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-2">
+        <h1 class="text-white text-lg font-semibold">Bookstore</h1>
+      </div>
+
+      <!-- Menu Items -->
+      <div class="hidden items-center space-x-4 sm:flex">
+        <% if (role==="USER" ) { %>
+          <!-- Home -->
+          <a href="/" class="text-white hover:text-gray-200">Home</a>
+          <% } %>
+            <% if (role==="ADMIN" ) { %>
+              <!-- Books -->
+              <a href="books" class="text-white hover:text-gray-200">Books</a>
+              <% } %>
+                <% if (role==="ADMIN" ) { %>
+                  <!-- Add Book -->
+                  <a href="addBook" class="text-white hover:text-gray-200">Add Book</a>
+                  <% } %>
+                    <% if (role==="ADMIN" ) { %>
+                      <!-- Create Admin -->
+                      <a href="/v1/create-admin" class="text-white hover:text-gray-200">Create Admin</a>
+                      <% } %>
+                        <!-- Logout -->
+                        <a href="/v1/logout" class="text-white hover:text-gray-200">Logout</a>
+                        <% if (role==="USER" ) { %>
+                          <!-- Cart -->
+                          <div class="relative">
+                            <a href="/cart" class="flex items-center text-white hover:text-gray-200 relative mr-4">
+                              <i class="fas fa-shopping-cart text-xl"></i>
+                              <span
+                                class="absolute -top-3 -right-3 px-2 py-1 bg-red-500 text-white rounded-full text-xs">
+                                <%= totalItems %>
+                              </span>
+                            </a>
+                          </div>
+                          <% } %>
+                            <!-- Profile -->
+                            <div class="relative">
+                              <a class="flex items-center justify-center bg-white text-blue-500 rounded-full w-10 h-10 focus:outline-none cursor-pointer"
+                                href="/profile">
+                                <img src="<%= profileImage %>" alt="profileImage"
+                                  class="object-cover rounded-full w-full h-full">
+                              </a>
+                            </div>
+      </div>
+
+      <!-- pop-up button -->
+      <div id="popupBtn" class="flex items-center space-x-4 sm:hidden ">
+        <i class="fa-solid fa-bars" style="color: #ffffff; font-size: 25px;"></i>
+      </div>
+
+      <!-- pop up menu -->
+
+      <div id="popupMenu"
+        class="popup-menu hidden absolute bg-white border border-gray-300 shadow-md p-4 roundedtop-14 w-2/5 z-10"
+        style="top: 50px; right: 20px;">
+        <div class="flex flex-col gap-5 text-center">
+          <!-- Profile -->
+          <div class="relative">
+            <a class="flex items-center justify-center bg-blue-500 text-blue-500 rounded-full m-auto w-10 h-10 focus:outline-none cursor-pointer"
+              href="/profile">
+              <img src="<%= profileImage %>" alt="profileImage" class="object-cover rounded-full w-full h-full">
+            </a>
+          </div>
+          <% if (role==="USER" ) { %>
+            <!-- Home -->
+            <a href="/" class="text-blue-500 font-bold hover:text-gray-200">Home</a>
+            <% } %>
+              <% if (role==="ADMIN" ) { %>
+                <!-- Books -->
+                <a href="/book-store" class="text-blue-500 font-bold hover:text-gray-200">Books</a>
+                <% } %>
+                  <% if (role==="ADMIN" ) { %>
+                    <!-- Add Book -->
+                    <a href="addBook" class="text-blue-500 font-bold hover:text-gray-200">Add Book</a>
+                    <% } %>
+                      <% if (role==="ADMIN" ) { %>
+                        <!-- Create Admin -->
+                        <a href="/v1/create-admin" class="text-blue-500 font-bold hover:text-gray-200">Create Admin</a>
+                        <% } %>
+                          <!-- Logout -->
+                          <a href="/v1/logout" class="text-blue-500 font-bold hover:text-gray-200">Logout</a>
+                          <% if (role==="USER" ) { %>
+                            <!-- Cart -->
+                            <div class="relative">
+                              <a href="/cart"
+                                class="flex items-center text-blue-500 font-bold hover:text-gray-200 relative mr-4 justify-center">
+                                <i class="fas fa-shopping-cart text-xl"></i>
+                                <span
+                                  class="absolute -top-3 right-8 px-2 py-1 bg-red-500 text-blue-500 rounded-full text-xs">
+                                  <%= totalItems %>
+                                </span>
+                              </a>
+                            </div>
+                            <% } %>
+        </div>
+      </div>
+    </nav>
+
+  </header>
+  <main>
+    <% if (role==="USER" ) { %>
+      <div class="User bg-white">
+        <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900">Trending Books</h2>
+
+          <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            <% data.forEach(item=> { %>
+              <div class="group relative">
+                <div
+                  class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                  <img src="<%= item.bookImage  %>" alt="Front of men&#039;s Basic Tee in black."
+                    class="h-full w-full object-cover object-center lg:h-full lg:w-full">
+                </div>
+                <div class="mt-4 flex justify-between">
+                  <div>
+                    <h3 class="text-sm text-gray-700">
+                      <a href="#">
+                        <span aria-hidden="true" class="absolute inset-0"></span>
+                        <%= item.bookName %>
+                      </a>
+                      <p class="text-sm font-medium text-gray-900 mt-3">
+                        Price : <%= item.bookPrice %>Rs
+                      </p>
+                    </h3>
+                  </div>
+                  <div>
+                    <button
+                      class="group relative flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                      onclick="handleCart(`<%= item._id %>`)">
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+          </div>
+        </div>
+      </div>
+      <% } else { %>
+        <div class="Admin bg-white">
+          <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-900">Manage Books</h2>
+
+            <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+              <% data.forEach(item=> { %>
+                <div class="group relative">
+                  <div
+                    class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                    <img src="<%= item.bookImage  %>" alt="Front of men&#039;s Basic Tee in black."
+                      class="h-full w-full object-cover object-center lg:h-full lg:w-full">
+                  </div>
+                  <div class="mt-4 flex justify-between">
+                    <div>
+                      <h3 class="text-sm text-gray-700">
+                        <a href="#">
+                          <span aria-hidden="true" class="absolute inset-0"></span>
+                          <%= item.bookName %>
+                        </a>
+                        <p class="text-sm font-medium text-gray-900 mt-3">
+                          Price : <%= item.bookPrice %>Rs
+                        </p>
+                      </h3>
+                    </div>
+                    <div>
+                      <button
+                        class="group relative flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                        onclick="handleDelete(`<%= item._id %>`)">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+          </div>
+        </div>
+        <% } %>
+  </main>
+  <script>
+    const popupBtn = document.getElementById('popupBtn');
+    const popupMenu = document.getElementById('popupMenu');
+
+    popupBtn.addEventListener('click', function () {
+      popupMenu.classList.toggle("hidden");
+    })
+    function handleCart(id) {
+      // console.log(id);
+
+      let url = `/addCartItems/${id}`
+      // console.log(url);
+
+      window.location.href = url;
+    }
+    function handleDelete(id) {
+      let url = `/delete-book/${id}`
+      // console.log(url);
+
+      window.location.href = url;
+    }
+  </script>
+</body>
+
+</html>

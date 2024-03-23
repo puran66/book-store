@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Information Form</title>
+  <!-- Include the Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 flex justify-center items-center h-screen">
+  <form class="bg-white p-8 rounded shadow-md w-80" action="/addBook" method="post" enctype="multipart/form-data">
+    <center>
+      <h1 class="text-[25px] font-bold mb-[20px]">Add Book Details</h1>
+    </center>
+    <label for="bookImage" class="block mb-2">Book Image</label>
+    <input type="file" id="bookImage" name="bookImage" required
+      class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-500">
+
+    <label for="bookName" class="block mt-4 mb-2">Book Name:</label>
+    <input type="text" id="bookName" name="bookName" required
+      class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-500">
+
+    <label for="bookPrice" class="block mt-4 mb-2">Book Price:</label>
+    <input type="number" id="bookPrice" name="bookPrice" min="0.01" step="0.01" required
+      class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-500">
+
+    <input type="submit" value="Submit"
+      class="mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full cursor-pointer">
+  </form>
+</body>
+
+</html>
