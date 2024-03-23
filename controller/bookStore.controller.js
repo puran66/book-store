@@ -2,6 +2,7 @@ const { bookStoreServices, userServices, emailServices } = require("../services"
 const otpGenerator = require('otp-generator');
 const sendEmail = require("../services/email.service");
 const session = require('express-session');
+const imageUpload = require("../helper/cloudinary");
 
 const bookStore = async (req, res) => {
   try {
@@ -67,13 +68,13 @@ const addBook = async (req, res) => {
       throw new Error("Missing Data");
     }
 
-    const bookImage = img.replace(/\\/g, "/").replace("D:/Full Stack Development/book-store-detail/public", "http://localhost:8000/");
+    const bookImage = await imageUpload(img);
 
-    // console.log(bookImage);
+    // console.log(imgUrl.url);
 
     const userId = await userServices.findId(token);
 
-    const book = await bookStoreServices.addBook(body, bookImage, userId);
+    const book = await bookStoreServices.addBook(body, bookImage.url, userId);
 
     res.status(201).redirect('/book-store');
   }
@@ -132,14 +133,14 @@ const updateProfile = async (req, res) => {
       throw new Error("inputs required")
     }
 
-    const profileImage = img.replace(/\\/g, "/").replace("D:/Full Stack Development/book-store-detail/public", "http://localhost:8000");
+    const profileImage = await imageUpload(img)
     // console.log(profileImage);
 
-    const updated = await bookStoreServices.updateProfile(body, profileImage);
+    const updated = await bookStoreServices.updateProfile(body, profileImage.url);
 
     const updatedBody = {
       _id: body._id,
-      profileImage: profileImage,
+      profileImage: profileImage.url,
       name: body.name,
       email: body.email,
       password: body.password
@@ -173,7 +174,7 @@ const sendOtp = async (req, res) => {
     const token = req.cookies.token;
 
     const email = await bookStoreServices.getEmail(token);
-    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+    const otp = otpGenerator.generate(6, { upperCaseAlphabets: true, specialChars: false });
 
     const senddata = await sendEmail(email, 'change password otp', otp);
     // console.log(senddata);

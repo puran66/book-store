@@ -1,3 +1,4 @@
+const imageUpload = require("../helper/cloudinary");
 const { userServices } = require("../services");
 
 const signUpPage = (req, res) => {
@@ -36,7 +37,7 @@ const signUp = async (req, res) => {
       throw new Error("email and password required");
     }
 
-    const profileImage = imgUrl.replace(/\\/g, "/").replace("D:/Full Stack Development/book-store-detail/public", "http://localhost:8000/");
+    const profileImage = await imageUpload(imgUrl);
 
     const isUser = await userServices.isUser(email);
 
@@ -44,7 +45,7 @@ const signUp = async (req, res) => {
       throw new Error("email already used!")
     }
 
-    const user = await userServices.addUser(name, email, role, password, profileImage);
+    const user = await userServices.addUser(name, email, role, password, profileImage.url);
     // console.log(user,"this is the user dataa");
 
     res.status(201).redirect('/v1/login')
@@ -64,7 +65,7 @@ const createAdmin = async (req, res) => {
       throw new Error("email and password required");
     }
 
-    const profileImage = imgUrl.replace(/\\/g, "/").replace("D:/Full Stack Development/book-store-detail/public", "http://localhost:8000/");
+    const profileImage =  await imageUpload(imgUrl);
 
     const isUser = await userServices.isUser(email);
 
@@ -72,7 +73,7 @@ const createAdmin = async (req, res) => {
       throw new Error("email already used!")
     }
 
-    const user = await userServices.addUser(name, email, role, password, profileImage);
+    const user = await userServices.addUser(name, email, role, password, profileImage.url);
     // console.log(user,"this is the user dataa");
 
     res.status(201).render('createAdmin', { msg: "Account created successfully!" })
